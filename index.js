@@ -1,5 +1,7 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
+const { Octokit } = require("octokit");
+
 const octokit = new Octokit({ auth: core.getInput("repo-token") });
 
 const KEY_TITLE_REGEX = "titleRegex";
