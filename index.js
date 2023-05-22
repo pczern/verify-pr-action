@@ -72,7 +72,7 @@ try {
   }
 
   if (errors.length > 0) {
-    await octokit.graphql(GRAPHQL_QUERY, {
+    octokit.graphql(GRAPHQL_QUERY, {
       pullRequestId,
       labelIds: labelIds.concat(newLabelIds),
     });
