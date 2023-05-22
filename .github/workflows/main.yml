@@ -2,7 +2,7 @@ name: "PR Checks"
 on:
   pull_request:
     types: [opened, edited, ready_for_review, reopened, synchronize]
-permissions: read-all|write-all
+permissions: [read-all, write-all]
 jobs:
   pr-checks:
     runs-on: ubuntu-latest
