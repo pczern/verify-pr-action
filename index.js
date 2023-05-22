@@ -108,10 +108,11 @@ async function action() {
     const { getLabelQuery } = await octokit.graphql(GET_LABELS_QUERY, {
       repositoryId,
     });
+    console.log("getLabelQuery", getLabelQuery);
     const assignableLabels = newLabels.filter((label) => !!label);
     console.log("assignableLabels", assignableLabels);
 
-    const errorLabels = getLabelQuery.node.labels.edges
+    const errorLabels = getLabelQuery.data.node.labels.edges
       .map(({ node: label }) => label)
       .filter(assignableLabels.includes(label.name))
       .map((label) => label.id);
