@@ -8,20 +8,6 @@ const KEY_TITLE_REGEX = "titleRegex";
 const KEY_DESCRIPTION_REGEX = "descriptionRegex";
 const KEY_TITLE_MIN_LENGTH = "titleMinLength";
 const KEY_DESCRIPTION_MIN_LENGTH = "descriptionMinLength";
-const GET_LABELS_QUERY = `query GetLabelsQuery(pullRequestId:$pullRequestId){
-	node(id: "PR_kwDOJmGuoM5RC3aC"){
-    ... on PullRequest {
-      labels(first: 100) {
-        edges {
-          node {
-            id
-            name
-          }
-        }
-      }
-    }
-  }
-}`;
 const UPDATE_PULL_REQUEST_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
   updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds})
   convertPullRequestToDraft(input:{pullRequestId:$pullRequestId})
@@ -49,10 +35,12 @@ async function action() {
     const payload = github.context.payload;
 
     const pullRequestId = payload.pull_request.id;
-    const pullRequestRepositoryUrl = payload.pull_request.repository.url;
-    const pullRequestRepositoryName = payload.pull_request.repository.name;
-    const pullRequestRepositoryOwnerLogin =
-      payload.pull_request.repository.owner.login;
+    const pullRequestRepositoryUrl = payload.repository.html_url;
+    const pullRequestRepositoryName = payload.repository.name;
+    const pullRequestRepositoryOwnerLogin = payload.repository.owner.login;
+    const labelIds = payload.pull_request.labels
+      .filter(({ node: label }) => !allLabels.includes(label.name))
+      .map((label) => label.id);
 
     const createLabel = async (name) => {
       const response = await octokit.request(
@@ -91,16 +79,9 @@ async function action() {
       labels.push(await createLabel(LABEL_DESCRIPTION_LENGTH));
     }
 
-    const { data } = await octokit.graphql(GET_LABELS_QUERY, {
-      pullRequestId,
-    });
-    const labelIds = data.node.labels.edges
-      .filter(({ node: label }) => !allLabels.includes(label.name))
-      .map((label) => label.id);
-
     if (errors.length > 0) {
       console.log(labelIds, pullRequestId);
-      await octokit.graphql(GRAPHQL_QUERY, {
+      await octokit.graphql(UPDATE_PULL_REQUEST_MUTATION, {
         pullRequestId,
         labelIds: labelIds.concat(newLabelIds),
       });
