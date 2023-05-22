@@ -48,6 +48,7 @@ async function action() {
 
     const createLabel = async (name) => {
       try {
+        console.log("create l");
         const response = await octokit.request(
           `POST ${pullRequestRepositoryUrl}/labels`,
           {
@@ -87,6 +88,8 @@ async function action() {
       errors.push("Description isn't long enough!");
       newLabelIds.push(await createLabel(LABEL_DESCRIPTION_LENGTH));
     }
+    console.log("labelids", labelIds);
+    console.log("newLabelIds", newLabelIds);
 
     if (errors.length > 0) {
       console.log(labelIds, pullRequestId);
