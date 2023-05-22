@@ -44,8 +44,9 @@ try {
 
   const time = new Date().toTimeString();
   core.setOutput("time", time);
-  const payload = JSON.stringify(github.context.payload, undefined, 2);
-  console.log(`The event payload: ${payload}`);
+  const payload = github.context.payload;
+  // const payload = JSON.stringify(github.context.payload, undefined, 2);
+  // console.log(`The event payload: ${payload}`);
 
   const pullRequestId = payload.pull_request.id;
   const labelIds = payload.pull_request.labels
