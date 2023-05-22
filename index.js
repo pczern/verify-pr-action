@@ -8,7 +8,21 @@ const KEY_TITLE_REGEX = "titleRegex";
 const KEY_DESCRIPTION_REGEX = "descriptionRegex";
 const KEY_TITLE_MIN_LENGTH = "titleMinLength";
 const KEY_DESCRIPTION_MIN_LENGTH = "descriptionMinLength";
-const GRAPHQL_QUERY = `mutation updatePullRequest($pullRequestId:ID!, $labelIds:[ID!]) {
+const GET_LABELS_QUERY = `query GetLabelsQuery(pullRequestId:$pullRequestId){
+	node(id: "PR_kwDOJmGuoM5RC3aC"){
+    ... on PullRequest {
+      labels(first: 100) {
+        edges {
+          node {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}`;
+const UPDATE_PULL_REQUEST_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
   updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds})
   convertPullRequestToDraft(input:{pullRequestId:$pullRequestId})
 }`;
@@ -35,14 +49,11 @@ async function action() {
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);
 
-    const pullRequestId = payload.pull_request.id;
+    const pullRequestId = payload.pull_request.head.id;
     const pullRequestRepositoryUrl = payload.pull_request.repository.url;
     const pullRequestRepositoryName = payload.pull_request.repository.name;
     const pullRequestRepositoryOwnerLogin =
       payload.pull_request.repository.owner.login;
-    const labelIds = payload.pull_request.labels
-      .filter((label) => !allLabels.includes(label.name))
-      .map((label) => label.id);
 
     const createLabel = async (name) => {
       const response = await octokit.request(
@@ -80,6 +91,13 @@ async function action() {
       errors.push("Description isn't long enough!");
       labels.push(await createLabel(LABEL_DESCRIPTION_LENGTH));
     }
+
+    const { data } = await octokit.graphql(GET_LABELS_QUERY, {
+      pullRequestId,
+    });
+    const labelIds = data.node.labels.edges
+      .filter(({ node: label }) => !allLabels.includes(label.name))
+      .map((label) => label.id);
 
     if (errors.length > 0) {
       console.log(labelIds, pullRequestId);
