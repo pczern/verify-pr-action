@@ -8,7 +8,7 @@ const KEY_TITLE_REGEX = "titleRegex";
 const KEY_DESCRIPTION_REGEX = "descriptionRegex";
 const KEY_TITLE_MIN_LENGTH = "titleMinLength";
 const KEY_DESCRIPTION_MIN_LENGTH = "descriptionMinLength";
-const GET_LABELS_QUERY = `query GetRepositoryLabelsQuery($repositoryId: ID!){
+const GET_LABELS_QUERY = `query getLabelQuery($repositoryId: ID!){
 	node(id: $repositoryId){
     ... on Repository {
       labels(first: 100) {
@@ -105,13 +105,13 @@ async function action() {
     }
     console.log("labelids", labelIds);
     console.log("newLabels", newLabels);
-    const { data } = await octokit.graphql(GET_LABELS_QUERY, {
+    const { getLabelQuery } = await octokit.graphql(GET_LABELS_QUERY, {
       repositoryId,
     });
     const assignableLabels = newLabels.filter((label) => !!label);
     console.log("assignableLabels", assignableLabels);
 
-    const errorLabels = data.node.labels.edges
+    const errorLabels = getLabelQuery.node.labels.edges
       .map(({ node: label }) => label)
       .filter(assignableLabels.includes(label.name))
       .map((label) => label.id);
