@@ -64,19 +64,19 @@ async function action() {
 
     if (!titleRegex.exec(payload.pull_request.title)) {
       errors.push("Title doesn't match Regex!");
-      labels.push(await createLabel(LABEL_TITLE_FORMAT));
+      newLabelIds.push(await createLabel(LABEL_TITLE_FORMAT));
     }
     if (!descriptionRegex.exec(payload.pull_request.body)) {
       errors.push("Description doesn't match Regex!");
-      labels.push(await createLabel(LABEL_DESCRIPTION_FORMAT));
+      newLabelIds.push(await createLabel(LABEL_DESCRIPTION_FORMAT));
     }
     if (payload.pull_request.title.length < titleMinLength) {
       errors.push("Title isn't long enough!");
-      labels.push(await createLabel(LABEL_TITLE_LENGTH));
+      newLabelIds.push(await createLabel(LABEL_TITLE_LENGTH));
     }
     if (payload.pull_request?.description?.length < descriptionMinLength) {
       errors.push("Description isn't long enough!");
-      labels.push(await createLabel(LABEL_DESCRIPTION_LENGTH));
+      newLabelIds.push(await createLabel(LABEL_DESCRIPTION_LENGTH));
     }
 
     if (errors.length > 0) {
