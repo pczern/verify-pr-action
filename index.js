@@ -42,16 +42,15 @@ try {
   const titleMinLength = core.getInput(KEY_TITLE_MIN_LENGTH);
   const descriptionMinLength = core.getInput(KEY_DESCRIPTION_MIN_LENGTH);
 
-  console.log(`Checking title regex`);
   const time = new Date().toTimeString();
   core.setOutput("time", time);
-
   const payload = JSON.stringify(github.context.payload, undefined, 2);
+  console.log(`The event payload: ${payload}`);
+
   const pullRequestId = payload.pull_request.id;
   const labelIds = payload.pull_request.labels
     .filter((label) => !allLabels.includes(label.name))
     .map((label) => label.id);
-  console.log(`The event payload: ${payload}`);
 
   const errors = [];
   const newLabelIds = [];
