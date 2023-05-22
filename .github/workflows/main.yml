@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: PR Check
-        uses: pczern/verify-pr-action@v0.0.3-alpha.2
+        uses: pczern/verify-pr-action@v0.0.3-alpha.3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           descriptionRegex: "Description.+"
