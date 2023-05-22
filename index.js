@@ -35,7 +35,7 @@ async function action() {
     const payload = github.context.payload;
 
     const pullRequestId = payload.pull_request.id;
-    const pullRequestRepositoryUrl = payload.repository.html_url;
+    const pullRequestRepositoryUrl = payload.repository.url;
     const pullRequestRepositoryName = payload.repository.name;
     const pullRequestRepositoryOwnerLogin = payload.repository.owner.login;
     const labelIds = payload.pull_request.labels
