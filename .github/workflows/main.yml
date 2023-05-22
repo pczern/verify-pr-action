@@ -7,7 +7,7 @@ jobs:
   pr-checks:
     runs-on: ubuntu-latest
     steps:
-      - name: PR Checker
+      - name: PR Check
         uses: pczern/verify-pr-action@v0.0.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
