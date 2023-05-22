@@ -49,7 +49,7 @@ async function action() {
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);
 
-    const pullRequestId = payload.pull_request.head.id;
+    const pullRequestId = payload.pull_request.base.head.id;
     const pullRequestRepositoryUrl = payload.pull_request.repository.url;
     const pullRequestRepositoryName = payload.pull_request.repository.name;
     const pullRequestRepositoryOwnerLogin =
