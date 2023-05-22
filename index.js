@@ -49,13 +49,11 @@ async function action() {
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);
 
-    const pullRequestId = payload.pull_request.pull_request.base.head.id;
-    const pullRequestRepositoryUrl =
-      payload.pull_request.pull_request.repository.url;
-    const pullRequestRepositoryName =
-      payload.pull_request.pull_request.repository.name;
+    const pullRequestId = payload.pull_request.id;
+    const pullRequestRepositoryUrl = payload.pull_request.repository.url;
+    const pullRequestRepositoryName = payload.pull_request.repository.name;
     const pullRequestRepositoryOwnerLogin =
-      payload.pull_request.pull_request.repository.owner.login;
+      payload.pull_request.repository.owner.login;
 
     const createLabel = async (name) => {
       const response = await octokit.request(
