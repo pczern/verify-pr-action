@@ -11,7 +11,7 @@ const KEY_DESCRIPTION_MIN_LENGTH = "descriptionMinLength";
 const GET_LABELS_QUERY = `query GetRepositoryLabelsQuery($repositoryId: ID!){
 	node(id: $repositoryId){
     ... on Repository {
-      labels {
+      labels(first: 100) {
         edges {
           node {
             id
