@@ -9,8 +9,12 @@ const KEY_DESCRIPTION_REGEX = "descriptionRegex";
 const KEY_TITLE_MIN_LENGTH = "titleMinLength";
 const KEY_DESCRIPTION_MIN_LENGTH = "descriptionMinLength";
 const UPDATE_PULL_REQUEST_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
-  updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds})
-  convertPullRequestToDraft(input:{pullRequestId:$pullRequestId})
+  updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds}){pullRequest {
+    id
+  }}
+  convertPullRequestToDraft(input:{pullRequestId:$pullRequestId}){pullRequest {
+    id
+  }}
 }`;
 
 const LABEL_TITLE_FORMAT = "Fix Title Format";
