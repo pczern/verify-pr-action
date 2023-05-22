@@ -95,7 +95,7 @@ async function action() {
       pullRequestId,
     });
     const labelIds = data.node.labels.edges
-      .filter(({ node: label }) => !allLabels.includes(label.name))
+      .filter(({ node }) => !allLabels.includes(node.name))
       .map((label) => label.id);
 
     if (errors.length > 0) {
