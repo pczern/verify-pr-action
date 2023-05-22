@@ -39,7 +39,7 @@ async function action() {
     const pullRequestRepositoryName = payload.repository.name;
     const pullRequestRepositoryOwnerLogin = payload.repository.owner.login;
     const labelIds = payload.pull_request.labels
-      .filter(({ node: label }) => !allLabels.includes(label.name))
+      .filter((label) => !allLabels.includes(label.name))
       .map((label) => label.id);
 
     const createLabel = async (name) => {
