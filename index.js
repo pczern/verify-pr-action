@@ -113,8 +113,8 @@ async function action() {
     console.log("assignableLabels", assignableLabels);
 
     const errorLabels = data.node.labels.edges
-      .map(({ node: label }) => label)
-      .filter(assignableLabels.includes(label.name))
+      .map(({ node }) => node)
+      .filter((label) => assignableLabels.includes(label.name))
       .map((label) => label.id);
     console.log("errorLabels", errorLabels);
 
