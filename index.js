@@ -44,23 +44,28 @@ async function action() {
     const pullRequestRepositoryOwnerLogin = payload.repository.owner.login;
     const labelIds = payload.pull_request.labels
       .filter((label) => !allLabels.includes(label.name))
-      .map((label) => label.id);
+      .map((label) => label.node_id);
 
     const createLabel = async (name) => {
-      const response = await octokit.request(
-        `POST ${pullRequestRepositoryUrl}/labels`,
-        {
-          owner: pullRequestRepositoryOwnerLogin,
-          repo: pullRequestRepositoryName,
-          name,
-          color: "ff0000",
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-      console.log(response);
-      return response?.node_id;
+      try {
+        const response = await octokit.request(
+          `POST ${pullRequestRepositoryUrl}/labels`,
+          {
+            owner: pullRequestRepositoryOwnerLogin,
+            repo: pullRequestRepositoryName,
+            name,
+            color: "ff0000",
+            headers: {
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+          }
+        );
+        console.log(response);
+
+        return response?.node_id;
+      } catch {
+        return null;
+      }
     };
 
     const errors = [];
@@ -87,7 +92,7 @@ async function action() {
       console.log(labelIds, pullRequestId);
       await octokit.graphql(UPDATE_PULL_REQUEST_MUTATION, {
         pullRequestId,
-        labelIds: labelIds.concat(newLabelIds),
+        labelIds: labelIds.concat(newLabelIds.filter((labelId) => !!labelId)),
       });
 
       throw new Error(errors.join("\n"));
