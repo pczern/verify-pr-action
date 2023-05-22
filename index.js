@@ -113,7 +113,7 @@ async function action() {
         labelIds: labelIds.concat(errorLabels),
       });
 
-      throw new Error("Action failed", errors.join("\n"));
+      throw new Error(`Action failed:\n${errors.join("\n")}`);
     }
   } catch (error) {
     core.setFailed(error.message);
