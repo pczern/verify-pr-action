@@ -1,0 +1,27 @@
+name: "Verify PR"
+description: "Verifies PR titles and descriptions"
+inputs:
+  repo-token:
+    required: true
+  titleRegex:
+    description: "Regex for title"
+    required: false
+    default: null
+  titleMinLength:
+    description: "Specifies min length for title"
+    required: false
+    default: 0
+  descriptionRegex:
+    description: "Regex for description"
+    required: false
+    default: null
+  descriptionMinLength:
+    description: "Specifies min length for description"
+    required: false
+    default: 0
+outputs:
+  time: # id of output
+    description: "The time we greeted you"
+runs:
+  using: "node16"
+  main: "index.js"
