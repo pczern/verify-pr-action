@@ -34,9 +34,6 @@ const UPDATE_PR_LABELS_MUTATION = `mutation UpdatePullRequestMutation($pullReque
   updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds}){pullRequest {
     id
   }}
-  convertPullRequestToDraft(input:{pullRequestId:$pullRequestId}){pullRequest {
-    id
-  }}
 }`;
 
 const LABEL_TITLE_FORMAT = "Fix Title Format";
