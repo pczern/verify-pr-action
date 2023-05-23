@@ -22,7 +22,15 @@ const GET_LABELS_QUERY = `query getLabelQuery($repositoryId: ID!){
     }
   }
 }`;
-const UPDATE_PULL_REQUEST_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
+const SET_PR_DRAFT_AND_UPDATE_PR_LABELS_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
+  updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds}){pullRequest {
+    id
+  }}
+  convertPullRequestToDraft(input:{pullRequestId:$pullRequestId}){pullRequest {
+    id
+  }}
+}`;
+const UPDATE_PR_LABELS_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
   updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds}){pullRequest {
     id
   }}
@@ -108,12 +116,17 @@ async function action() {
       .map((label) => label.id);
 
     if (errors.length > 0) {
-      await octokit.graphql(UPDATE_PULL_REQUEST_MUTATION, {
+      await octokit.graphql(SET_PR_DRAFT_AND_UPDATE_PR_LABELS_MUTATION, {
         pullRequestId,
         labelIds: labelIds.concat(errorLabels),
       });
 
       throw new Error(`Action failed:\n${errors.join("\n")}`);
+    } else {
+      await octokit.graphql(UPDATE_PR_LABELS_MUTATION, {
+        pullRequestId,
+        labelIds: labelIds,
+      });
     }
   } catch (error) {
     core.setFailed(error.message);
