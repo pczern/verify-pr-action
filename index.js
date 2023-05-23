@@ -22,7 +22,15 @@ const GET_LABELS_QUERY = `query getLabelQuery($repositoryId: ID!){
     }
   }
 }`;
-const UPDATE_PULL_REQUEST_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
+const SET_PR_DRAFT_AND_UPDATE_PR_LABELS_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
+  updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds}){pullRequest {
+    id
+  }}
+  convertPullRequestToDraft(input:{pullRequestId:$pullRequestId}){pullRequest {
+    id
+  }}
+}`;
+const UPDATE_PR_LABELS_MUTATION = `mutation UpdatePullRequestMutation($pullRequestId:ID!, $labelIds:[ID!]) {
   updatePullRequest(input:{pullRequestId:$pullRequestId, labelIds:$labelIds}){pullRequest {
     id
   }}
@@ -48,8 +56,6 @@ async function action() {
     const titleMinLength = core.getInput(KEY_TITLE_MIN_LENGTH);
     const descriptionMinLength = core.getInput(KEY_DESCRIPTION_MIN_LENGTH);
 
-    const time = new Date().toTimeString();
-    core.setOutput("time", time);
     const payload = github.context.payload;
 
     const pullRequestId = payload.pull_request.node_id;
@@ -63,23 +69,18 @@ async function action() {
 
     const createLabel = async (name) => {
       try {
-        console.log("create l");
-        const response = await octokit.request(
-          `POST ${pullRequestRepositoryUrl}/labels`,
-          {
-            owner: pullRequestRepositoryOwnerLogin,
-            repo: pullRequestRepositoryName,
-            name,
-            color: "ff0000",
-            headers: {
-              "X-GitHub-Api-Version": "2022-11-28",
-            },
-          }
-        );
-        console.log(response);
-
-        return name;
+        await octokit.request(`POST ${pullRequestRepositoryUrl}/labels`, {
+          owner: pullRequestRepositoryOwnerLogin,
+          repo: pullRequestRepositoryName,
+          name,
+          color: "ff0000",
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        });
       } catch {
+        // do nothing
+      } finally {
         return name;
       }
     };
@@ -103,29 +104,29 @@ async function action() {
       errors.push("Description isn't long enough!");
       newLabels.push(await createLabel(LABEL_DESCRIPTION_LENGTH));
     }
-    console.log("labelids", labelIds);
-    console.log("newLabels", newLabels);
+
     const data = await octokit.graphql(GET_LABELS_QUERY, {
       repositoryId,
     });
-    console.log("getLabelQuery", data);
     const assignableLabels = newLabels.filter((label) => !!label);
-    console.log("assignableLabels", assignableLabels);
 
     const errorLabels = data.node.labels.edges
-      .map(({ node: label }) => label)
-      .filter(assignableLabels.includes(label.name))
+      .map(({ node }) => node)
+      .filter((label) => assignableLabels.includes(label.name))
       .map((label) => label.id);
-    console.log("errorLabels", errorLabels);
 
     if (errors.length > 0) {
-      console.log(labelIds, pullRequestId);
-      await octokit.graphql(UPDATE_PULL_REQUEST_MUTATION, {
+      await octokit.graphql(SET_PR_DRAFT_AND_UPDATE_PR_LABELS_MUTATION, {
         pullRequestId,
         labelIds: labelIds.concat(errorLabels),
       });
 
-      throw new Error(errors.join("\n"));
+      throw new Error(`Action failed:\n${errors.join("\n")}`);
+    } else {
+      await octokit.graphql(UPDATE_PR_LABELS_MUTATION, {
+        pullRequestId,
+        labelIds: labelIds,
+      });
     }
   } catch (error) {
     core.setFailed(error.message);

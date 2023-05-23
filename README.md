@@ -20,12 +20,6 @@ This action verifies PR titles and descriptions.
 
 **Required** Minimum length for PR description
 
-## Outputs
-
-### `time`
-
-The time we greeted you.
-
 ## Example usage
 
 ```yaml
