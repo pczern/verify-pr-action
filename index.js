@@ -94,6 +94,7 @@ async function action() {
         description: "Description doesn't match Regex!",
       });
     }
+    console.log(typeof titleMinLength, titleMinLength);
     if (payload.pull_request.title.length < titleMinLength) {
       errors.push({
         name: LABEL_TITLE_LENGTH,
