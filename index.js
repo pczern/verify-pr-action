@@ -102,14 +102,7 @@ async function action() {
         description: "Title isn't long enough!",
       });
     }
-    console.log(
-      payload.pull_request?.description?.length,
-      payload.pull_request.description,
-      payload.pull_request.description.length,
-      descriptionMinLength,
-      typeof descriptionMinLength
-    );
-    if (payload.pull_request?.description.length < descriptionMinLength) {
+    if (payload.pull_request?.body.length < descriptionMinLength) {
       errors.push({
         name: LABEL_DESCRIPTION_LENGTH,
         description: "Description isn't long enough!",
