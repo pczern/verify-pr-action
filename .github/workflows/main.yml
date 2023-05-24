@@ -1,5 +1,7 @@
 name: "PR Checks"
 on:
+  pull_request_target:
+    types: [opened, edited, ready_for_review, reopened, synchronize]
   pull_request:
     types: [opened, edited, ready_for_review, reopened, synchronize]
 permissions: write-all
