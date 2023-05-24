@@ -97,10 +97,6 @@ async function action() {
       errors.push("Title isn't long enough!");
       newLabels.push(await createLabel(LABEL_TITLE_LENGTH));
     }
-    if (payload.pull_request?.description?.length < descriptionMinLength) {
-      errors.push("Description isn't long enough!");
-      newLabels.push(await createLabel(LABEL_DESCRIPTION_LENGTH));
-    }
 
     const data = await octokit.graphql(GET_LABELS_QUERY, {
       repositoryId,
