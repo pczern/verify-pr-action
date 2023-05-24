@@ -59,6 +59,7 @@ async function action() {
     const descriptionMinLength = core.getInput(KEY_DESCRIPTION_MIN_LENGTH);
 
     const payload = github.context.payload;
+    console.log(JSON.stringify(payload));
     const pullRequestId = payload.pull_request.node_id;
     const pullRequestMergeable = payload.pull_request.mergeable;
     const repositoryId = payload.repository.node_id;
@@ -150,7 +151,10 @@ async function action() {
         labelIds: settableLabels,
       }
     );
-    if (isError) throw new Error(`Action failed:\n${errors.join("\n")}`);
+    if (isError)
+      throw new Error(
+        `Action failed:\n${errors.map((error) => error.description).join("\n")}`
+      );
   } catch (error) {
     core.setFailed(error.message);
   }
