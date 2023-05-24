@@ -106,7 +106,7 @@ async function action() {
         description: "Description isn't long enough!",
       });
     }
-    if (!pullRequestMergeable) {
+    if (pullRequestMergeable === false) {
       errors.push({
         name: LABEL_MERGE_CONFLICTS,
         description: "There are Merge Conflicts!",
