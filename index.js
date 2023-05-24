@@ -96,19 +96,20 @@ async function action() {
         description: "Description doesn't match Regex!",
       });
     }
-    console.log(
-      payload.pull_request.title,
-      payload.pull_request.title.length,
-      titleMinLength,
-      typeof titleMinLength
-    );
     if (payload.pull_request.title.length < titleMinLength) {
       errors.push({
         name: LABEL_TITLE_LENGTH,
         description: "Title isn't long enough!",
       });
     }
-    if (payload.pull_request?.description?.length < descriptionMinLength) {
+    console.log(
+      payload.pull_request?.description?.length,
+      payload.pull_request.description,
+      payload.pull_request.description.length,
+      descriptionMinLength,
+      typeof descriptionMinLength
+    );
+    if (payload.pull_request?.description.length < descriptionMinLength) {
       errors.push({
         name: LABEL_DESCRIPTION_LENGTH,
         description: "Description isn't long enough!",
