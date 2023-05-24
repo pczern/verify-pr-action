@@ -55,11 +55,13 @@ async function action() {
   try {
     const titleRegex = new RegExp(core.getInput(KEY_TITLE_REGEX));
     const descriptionRegex = new RegExp(core.getInput(KEY_DESCRIPTION_REGEX));
-    const titleMinLength = core.getInput(KEY_TITLE_MIN_LENGTH);
-    const descriptionMinLength = core.getInput(KEY_DESCRIPTION_MIN_LENGTH);
+    const titleMinLength = parseInt(core.getInput(KEY_TITLE_MIN_LENGTH));
+    const descriptionMinLength = parseInt(
+      core.getInput(KEY_DESCRIPTION_MIN_LENGTH)
+    );
 
     const payload = github.context.payload;
-    console.log(JSON.stringify(payload));
+
     const pullRequestId = payload.pull_request.node_id;
     const pullRequestMergeable = payload.pull_request.mergeable;
     const repositoryId = payload.repository.node_id;
@@ -94,7 +96,6 @@ async function action() {
         description: "Description doesn't match Regex!",
       });
     }
-    console.log(typeof titleMinLength, titleMinLength);
     if (payload.pull_request.title.length < titleMinLength) {
       errors.push({
         name: LABEL_TITLE_LENGTH,
