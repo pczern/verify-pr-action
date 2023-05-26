@@ -40,7 +40,7 @@ const LABEL_TITLE_FORMAT = "Fix Title Format";
 const LABEL_DESCRIPTION_FORMAT = "Fix Description Format";
 const LABEL_TITLE_LENGTH = "Title Too Small";
 const LABEL_DESCRIPTION_LENGTH = "Description Too Small";
-const LABEL_MERGE_CONFLICTS = "Merge Conflicts";
+const LABEL_MERGE_CONFLICTS = "Merge Conflict";
 const LABEL_VERIFIED = "Verified";
 
 const allLabels = [
@@ -96,13 +96,13 @@ async function action() {
         description: "Description doesn't match Regex!",
       });
     }
-    if (payload.pull_request.title.length < titleMinLength) {
+    if (payload.pull_request?.title?.length < titleMinLength) {
       errors.push({
         name: LABEL_TITLE_LENGTH,
         description: "Title isn't long enough!",
       });
     }
-    if (payload.pull_request?.body.length < descriptionMinLength) {
+    if (payload.pull_request?.body?.length < descriptionMinLength) {
       errors.push({
         name: LABEL_DESCRIPTION_LENGTH,
         description: "Description isn't long enough!",
