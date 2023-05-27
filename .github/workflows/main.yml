@@ -16,5 +16,7 @@ jobs:
           descriptionRegex: "Description.+"
           titleMinLength: 10
           descriptionMinLength: 10
+      - name: Env variables
+        run: env
       - name: Get output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
