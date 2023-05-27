@@ -8,6 +8,7 @@ permissions: write-all
 jobs:
   pr-checks:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: PR Check
         uses: pczern/verify-pr-action@v0.0.3-alpha.39
