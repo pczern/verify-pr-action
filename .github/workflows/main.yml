@@ -1,18 +1,23 @@
 name: "PR Checks"
 on:
+  pull_request_target:
+    types: [opened, edited, ready_for_review, reopened, synchronize]
   pull_request:
     types: [opened, edited, ready_for_review, reopened, synchronize]
-
+permissions: write-all
 jobs:
   pr-checks:
     runs-on: ubuntu-latest
+    environment: production
     steps:
-      - name: PR Checker
-        uses: pczern/verify-pr-action@v0.0.3-alpha.26
+      - name: PR Check
+        uses: pczern/verify-pr-action@v0.0.3-alpha.39
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           descriptionRegex: "Description.+"
           titleMinLength: 10
           descriptionMinLength: 10
+      - name: Env variables
+        run: env
       - name: Get output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
