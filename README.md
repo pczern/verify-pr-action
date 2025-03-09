@@ -1,6 +1,6 @@
 # verify-pr-action
 
-This action verifies PR titles and descriptions. It labels pull requests accordingly.
+This action verifies PR titles and descriptions. It labels pull requests accordingly.<br>
 Notice: Merge conflict labeling could work in future when action can be run on PR's with merge conflicts.
 
 ## Inputs
